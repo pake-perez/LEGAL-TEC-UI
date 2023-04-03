@@ -11,4 +11,16 @@ export default defineConfig({
 			'/api': 'http://localhost:3001',
 		},
 	},
+	resolve: {
+		alias: {
+			'./runtimeConfig': './runtimeConfig.browser',
+		},
+	},
+	optimizeDeps: {
+		esbuildOptions: {
+			loader: {
+				'.js': 'jsx',
+			},
+		},
+	},
 });

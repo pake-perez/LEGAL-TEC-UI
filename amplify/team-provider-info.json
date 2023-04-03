@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-legaltec-staging-174026-authRole",
+      "UnauthRoleArn": "arn:aws:iam::679269096941:role/amplify-legaltec-staging-174026-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::679269096941:role/amplify-legaltec-staging-174026-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-legaltec-staging-174026-deployment",
+      "UnauthRoleName": "amplify-legaltec-staging-174026-unauthRole",
+      "StackName": "amplify-legaltec-staging-174026",
+      "StackId": "arn:aws:cloudformation:us-east-1:679269096941:stack/amplify-legaltec-staging-174026/9edd4b80-d246-11ed-920f-0e9fd968da73",
+      "AmplifyAppId": "d32xmnudid3b6w"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d32xmnudid3b6w",
+          "type": "cicd"
+        }
+      }
+    }
+  }
+}

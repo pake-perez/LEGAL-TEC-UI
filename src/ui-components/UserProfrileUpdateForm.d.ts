@@ -1,0 +1,50 @@
+/***************************************************************************
+ * The contents of this file were generated with Amplify Studio.           *
+ * Please refrain from making any modifications to this file.              *
+ * Any changes to this file will be overwritten when running amplify pull. *
+ **************************************************************************/
+
+import * as React from "react";
+import { GridProps, SwitchFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+import { UserProfrile } from "../models";
+export declare type ValidationResponse = {
+    hasError: boolean;
+    errorMessage?: string;
+};
+export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
+export declare type UserProfrileUpdateFormInputValues = {
+    firstName?: string;
+    lastName?: string;
+    gender?: string;
+    jobTitle?: string;
+    isAgreed?: boolean;
+};
+export declare type UserProfrileUpdateFormValidationValues = {
+    firstName?: ValidationFunction<string>;
+    lastName?: ValidationFunction<string>;
+    gender?: ValidationFunction<string>;
+    jobTitle?: ValidationFunction<string>;
+    isAgreed?: ValidationFunction<boolean>;
+};
+export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
+export declare type UserProfrileUpdateFormOverridesProps = {
+    UserProfrileUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
+    firstName?: PrimitiveOverrideProps<TextFieldProps>;
+    lastName?: PrimitiveOverrideProps<TextFieldProps>;
+    gender?: PrimitiveOverrideProps<TextFieldProps>;
+    jobTitle?: PrimitiveOverrideProps<TextFieldProps>;
+    isAgreed?: PrimitiveOverrideProps<SwitchFieldProps>;
+} & EscapeHatchProps;
+export declare type UserProfrileUpdateFormProps = React.PropsWithChildren<{
+    overrides?: UserProfrileUpdateFormOverridesProps | undefined | null;
+} & {
+    id?: string;
+    userProfrile?: UserProfrile;
+    onSubmit?: (fields: UserProfrileUpdateFormInputValues) => UserProfrileUpdateFormInputValues;
+    onSuccess?: (fields: UserProfrileUpdateFormInputValues) => void;
+    onError?: (fields: UserProfrileUpdateFormInputValues, errorMessage: string) => void;
+    onChange?: (fields: UserProfrileUpdateFormInputValues) => UserProfrileUpdateFormInputValues;
+    onValidate?: UserProfrileUpdateFormValidationValues;
+} & React.CSSProperties>;
+export default function UserProfrileUpdateForm(props: UserProfrileUpdateFormProps): React.ReactElement;
