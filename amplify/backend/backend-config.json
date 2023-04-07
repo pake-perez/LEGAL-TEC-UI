@@ -1,5 +1,19 @@
 {
   "api": {
+    "legalTeDocsApi": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "fotoInfraccion"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "legaltec": {
       "dependsOn": [],
       "output": {
@@ -22,6 +36,27 @@
       "service": "AppSync"
     }
   },
+  "function": {
+    "fotoInfraccion": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributeEnvMap": {
+            "Arn": "TABLE_ARN",
+            "Name": "TABLE_NAME"
+          },
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "storage",
+          "resourceName": "templates"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
   "hosting": {
     "amplifyhosting": {
       "lastPushTimeStamp": "2023-04-03T18:14:42.363Z",
@@ -30,6 +65,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_fotoInfraccion_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fotoInfraccion"
+        }
+      ]
+    },
+    "AMPLIFY_function_fotoInfraccion_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "fotoInfraccion"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {
@@ -45,6 +96,12 @@
           "resourceName": "amplifyhosting"
         }
       ]
+    }
+  },
+  "storage": {
+    "templates": {
+      "providerPlugin": "awscloudformation",
+      "service": "DynamoDB"
     }
   }
 }

@@ -17,6 +17,19 @@
           "appId": "d32xmnudid3b6w",
           "type": "cicd"
         }
+      },
+      "function": {
+        "fotoInfraccion": {
+          "deploymentBucketName": "amplify-legaltec-staging-174026-deployment",
+          "s3Key": "amplify-builds/fotoInfraccion-7944647174644d725673-build.zip"
+        }
+      },
+      "api": {
+        "legaltec": {},
+        "legalTeDocsApi": {}
+      },
+      "storage": {
+        "templates": {}
       }
     }
   }
