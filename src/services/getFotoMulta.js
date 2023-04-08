@@ -8,7 +8,7 @@ let mockData = {
 
 export const getFotoMulta = async (formData) => {
 	try {
-		const { data } = await axios.post('/api/fotomulta', formData, { responseType: 'blob' });
+		const { data } = await axios.post('http://digilegal-api-dev.us-east-1.elasticbeanstalk.com/api/fotomulta', formData, { responseType: 'blob' });
 		console.log(data);
 		return data;
 	} catch (error) {
