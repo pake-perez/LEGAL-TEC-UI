@@ -30,10 +30,9 @@ const UploadFile = () => {
 	};
 
 	const uploadFile = async () => {
-		let formData = {
-			docName,
-			file,
-		};
+		const formData = new FormData();
+		formData.append('file', file);
+		formData.append('fileName', docName);
 		let data = await postNewDocument(formData);
 		console.log(data);
 	};
