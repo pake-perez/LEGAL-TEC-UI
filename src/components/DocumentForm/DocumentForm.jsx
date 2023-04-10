@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { getFotoMulta } from '../../services/getFotoMulta';
-import { FormGroup, Stack, TextInput, Button } from '@carbon/react';
+import { Form, FormGroup, Stack, TextInput, Button } from '@carbon/react';
 
 const DocumentForm = () => {
 	const [name, setName] = useState('');
@@ -47,14 +47,16 @@ const DocumentForm = () => {
 	};
 
 	return (
-		<FormGroup style={{ maxWidth: '400px' }} legendText="Datos de Fotoinfraccion">
+		<Form>
 			<Stack gap={7}>
-				<TextInput onChange={handleTextChange} id="name" labelText="Nombre" />
-				<TextInput onChange={handleTextChange} id="plate" labelText="Placa" />
-				<TextInput onChange={handleTextChange} id="model" labelText="Modelo" />
+				<FormGroup style={{ maxWidth: '400px' }} legendText="Datos de Fotoinfraccion">
+					<TextInput onChange={handleTextChange} id="name" labelText="Nombre" />
+					<TextInput onChange={handleTextChange} id="plate" labelText="Placa" />
+					<TextInput onChange={handleTextChange} id="model" labelText="Modelo" />
+				</FormGroup>
 				<Button onClick={submitInfo}>Submit</Button>
 			</Stack>
-		</FormGroup>
+		</Form>
 	);
 };
 

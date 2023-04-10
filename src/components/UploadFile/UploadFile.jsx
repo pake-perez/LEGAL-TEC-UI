@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { postNewDocument } from '../../services/postNewDocument';
-import { FormGroup, FormItem, Stack, TextInput, Button, FileUploaderDropContainer, FileUploaderItem } from '@carbon/react';
+import { Form, FormGroup, FormItem, Stack, TextInput, Button, FileUploaderDropContainer, FileUploaderItem } from '@carbon/react';
 
 const UploadFile = () => {
 	const [docName, setDocName] = useState('');
@@ -9,9 +9,12 @@ const UploadFile = () => {
 	const [fileExists, setFileExists] = useState(false);
 	const [fileUploadStatus, setFileUploadStatus] = useState('uploading');
 	const [disableSubmit, setDisableSubmit] = useState(true);
+	const [maxKbSize, setMaxKbSize] = useState(500);
+	const [fileValidation, setFileValidation] = useState({});
 
 	const handleTextChange = (event) => {
 		let newText = event.target.value;
+		console.log(event.target);
 		switch (event.target.id) {
 			case 'docName':
 				setDocName(newText + '.docx');
@@ -22,18 +25,19 @@ const UploadFile = () => {
 	};
 
 	const handleChangeFile = async (event) => {
+		let isFileValid = validateFile(event.target.files[0]);
 		setFile(event.target.files[0]);
 		setFileExists(true);
-		setFileUploadStatus('edit');
-		setDisableSubmit(false);
-		console.log(event.target.files[0]);
+		setDisableSubmit(!isFileValid);
 	};
 
-	const uploadFile = async () => {
+	const onSubmitHandler = async (event) => {
+		event.preventDefault();
 		const formData = new FormData();
 		formData.append('file', file);
 		formData.append('fileName', docName);
 		let data = await postNewDocument(formData);
+		setFileUploadStatus('complete');
 		console.log(data);
 	};
 
@@ -42,26 +46,40 @@ const UploadFile = () => {
 		setDisableSubmit(true);
 	};
 
+	const validateFile = (currentFile) => {
+		let isValid = true;
+		console.log(currentFile);
+		let size = currentFile.size;
+		let currentValidation = {};
+		if (currentFile.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+			currentValidation.invalid = true;
+			currentValidation.errorSubject = 'Tipo de archivo incorrecto';
+			currentValidation.errorBody = 'Solo se permiten archivos .docx';
+			isValid = false;
+		}
+		if (size / 1024 > maxKbSize) {
+			currentValidation.invalid = true;
+			currentValidation.errorSubject = 'Limite de Peso';
+			currentValidation.errorBody = `El máximo peso es de ${maxKbSize} kB`;
+			isValid = false;
+		}
+		setFileUploadStatus('edit');
+		setFileValidation(currentValidation);
+
+		return isValid;
+	};
+
+	const validateForm = () => {
+		uploadFile();
+	};
+
 	const getFileDescription = () => {
-		let invalid = false;
-		let errorBody = '';
-		let errorSubject = '';
-		let size = file.size;
-		let maxSize = 500 * 1024; //First number is number of accepted kB
-		if (file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-			invalid = true;
-		}
-		if (size > maxSize) {
-			invalid = true;
-			errorSubject = 'Size Limit';
-			errorBody = 'Maximum size of document is 500kb';
-		}
 		return (
 			<FileUploaderItem
 				name={file.name}
-				invalid={invalid}
-				errorBody={errorBody}
-				errorSubject={errorSubject}
+				invalid={fileValidation.invalid}
+				errorSubject={fileValidation.errorSubject}
+				errorBody={fileValidation.errorBody}
 				status={fileUploadStatus}
 				onDelete={handleDeleteFile}
 			/>
@@ -69,35 +87,33 @@ const UploadFile = () => {
 	};
 
 	return (
-		<>
-			<FormGroup style={{ maxWidth: '400px' }} legendText="Subir un nuevo template">
-				<Stack gap={7}>
-					<TextInput onChange={handleTextChange} id="docName" labelText="Nombre" />
+		<Form onSubmit={onSubmitHandler}>
+			<Stack gap={7}>
+				<TextInput id="docName" labelText="Nombre" onChange={handleTextChange} required />
 
-					<FormItem>
-						<p className="cds--file--label">Upload files</p>
-						<p className="cds--label-description">Max file size is 500kb. Supported file types are .jpg and .png.</p>
-						<FileUploaderDropContainer
-							accept={['.docx']}
-							innerRef={{
-								current: '[Circular]',
-							}}
-							labelText="Drag and drop files here or click to upload"
-							multiple
-							name=""
-							onAddFiles={handleChangeFile}
-							onChange={handleChangeFile}
-							tabIndex={0}
-						/>
-						{fileExists ? getFileDescription() : null}
-						<div className="cds--file-container cds--file-container--drop" />
-					</FormItem>
-					<Button onClick={uploadFile} disabled={disableSubmit}>
-						Submit
-					</Button>
-				</Stack>
-			</FormGroup>
-		</>
+				<FormItem>
+					<p className="cds--file--label">Elegir archivo</p>
+					<p className="cds--label-description">Max {maxKbSize} kB. Solo acepta archivos .docx</p>
+					<FileUploaderDropContainer
+						accept={['.docx']}
+						innerRef={{
+							current: '[Circular]',
+						}}
+						labelText="Arrastra un archivo o da click para seleccionarlo"
+						multiple={false}
+						name=""
+						onAddFiles={handleChangeFile}
+						onChange={handleChangeFile}
+						tabIndex={0}
+					/>
+					{fileExists ? getFileDescription() : null}
+					<div className="cds--file-container cds--file-container--drop" />
+				</FormItem>
+				<Button type="submit" disabled={disableSubmit}>
+					Enviar
+				</Button>
+			</Stack>
+		</Form>
 	);
 };
 

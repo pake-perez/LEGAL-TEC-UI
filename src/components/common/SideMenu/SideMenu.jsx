@@ -17,13 +17,13 @@ const SideMenu = () => (
 				</SideNavLink>
 				<SideNavMenu renderIcon={NotebookIcon} title="Templates">
 					{/* <SideNavMenuItem href="/templates">Upload Template</SideNavMenuItem>\ */}
-					<Link className="link cds--side-nav__link" to="/templates">
+					<Link className="link cds--side-nav__link" to="/templates" state={{ view: 'upload' }}>
 						Upload Template
 					</Link>
 				</SideNavMenu>
 				<SideNavMenu renderIcon={DocumentSignedIcon} title="Documentos">
 					{/* <SideNavMenuItem href="/documentos">Crear Documento</SideNavMenuItem> */}
-					<Link className="link cds--side-nav__link" to="/documentos">
+					<Link className="link cds--side-nav__link" to="/documentos" state={{ view: 'create' }}>
 						Crear Documento
 					</Link>
 				</SideNavMenu>
