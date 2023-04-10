@@ -1,19 +1,10 @@
-import Navbar from './components/Navbar';
-import SideMenu from './components/SideMenu';
-import { Content } from '@carbon/react';
-import DocumentForm from './components/DocumentForm/DocumentForm';
 import './App.scss';
+import { MainRouter } from './routers/MainRouter';
 
 function App() {
 	return (
 		<div className="App">
-			<>
-				<Navbar />
-				<SideMenu />
-				<Content>
-					<DocumentForm />
-				</Content>
-			</>
+			<MainRouter></MainRouter>
 		</div>
 	);
 }

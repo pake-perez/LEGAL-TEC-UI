@@ -18,22 +18,22 @@ import { Switcher, Notification, UserAvatar } from '@carbon/react/icons';
 const Navbar = () => (
 	<HeaderContainer
 		render={({ isSideNavExpanded, onClickSideNavExpand }) => (
-			<Header aria-label="Legal Tec">
+			<Header aria-label="Digilegal">
 				<SkipToContent />
 				<HeaderMenuButton aria-label="Open menu" onClick={onClickSideNavExpand} isActive={isSideNavExpanded} />
 				<HeaderName href="/" prefix="">
-					Legal Tec
+					Digilegal
 				</HeaderName>
-				<HeaderNavigation aria-label="Legal Tec">
-					<HeaderMenuItem href="/repos">Lawyer View</HeaderMenuItem>
+				<HeaderNavigation aria-label="Digilegal">
+					<HeaderMenuItem href="/">Welcome User</HeaderMenuItem>
 				</HeaderNavigation>
-				<SideNav aria-label="Side navigation" expanded={isSideNavExpanded} isPersistent={false}>
+				{/* <SideNav aria-label="Side navigation" expanded={isSideNavExpanded} isPersistent={true}>
 					<SideNavItems>
 						<HeaderSideNavItems>
 							<HeaderMenuItem href="/repos">Repositories</HeaderMenuItem>
 						</HeaderSideNavItems>
 					</SideNavItems>
-				</SideNav>
+				</SideNav> */}
 				<HeaderGlobalBar>
 					<HeaderGlobalAction aria-label="Notifications" tooltipAlignment="center">
 						<Notification size={20} />
