@@ -21,5 +21,11 @@
 		"@types/react-dom": "^18.0.11",
 		"@vitejs/plugin-react-swc": "^3.0.0",
 		"vite": "^4.2.0"
+	},
+	"overrides": {
+		"@carbon/react": {
+			"react": "^18",
+      "react-dom": "^18"
+		}
 	}
 }
