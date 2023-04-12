@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { postNewDocument } from '../../services/postNewDocument';
+import { TemplateFieldsModal } from '../TemplateFieldsModal/TemplateFieldsModal';
 import { Form, FormGroup, FormItem, Stack, TextInput, Button, FileUploaderDropContainer, FileUploaderItem } from '@carbon/react';
 
 const UploadFile = () => {
@@ -11,10 +12,11 @@ const UploadFile = () => {
 	const [disableSubmit, setDisableSubmit] = useState(true);
 	const [maxKbSize, setMaxKbSize] = useState(500);
 	const [fileValidation, setFileValidation] = useState({});
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [templateStructure, setTemplateStructure] = useState({});
 
 	const handleTextChange = (event) => {
 		let newText = event.target.value;
-		console.log(event.target);
 		switch (event.target.id) {
 			case 'docName':
 				setDocName(newText + '.docx');
@@ -38,7 +40,8 @@ const UploadFile = () => {
 		formData.append('fileName', docName);
 		let data = await postNewDocument(formData);
 		setFileUploadStatus('complete');
-		console.log(data);
+		setTemplateStructure(data);
+		setIsModalOpen(true);
 	};
 
 	const handleDeleteFile = (event) => {
@@ -48,7 +51,6 @@ const UploadFile = () => {
 
 	const validateFile = (currentFile) => {
 		let isValid = true;
-		console.log(currentFile);
 		let size = currentFile.size;
 		let currentValidation = {};
 		if (currentFile.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
@@ -87,33 +89,36 @@ const UploadFile = () => {
 	};
 
 	return (
-		<Form onSubmit={onSubmitHandler}>
-			<Stack gap={7}>
-				<TextInput id="docName" labelText="Nombre" onChange={handleTextChange} required />
+		<>
+			<Form onSubmit={onSubmitHandler}>
+				<Stack gap={7}>
+					<TextInput id="docName" labelText="Nombre" onChange={handleTextChange} required />
 
-				<FormItem>
-					<p className="cds--file--label">Elegir archivo</p>
-					<p className="cds--label-description">Max {maxKbSize} kB. Solo acepta archivos .docx</p>
-					<FileUploaderDropContainer
-						accept={['.docx']}
-						innerRef={{
-							current: '[Circular]',
-						}}
-						labelText="Arrastra un archivo o da click para seleccionarlo"
-						multiple={false}
-						name=""
-						onAddFiles={handleChangeFile}
-						onChange={handleChangeFile}
-						tabIndex={0}
-					/>
-					{fileExists ? getFileDescription() : null}
-					<div className="cds--file-container cds--file-container--drop" />
-				</FormItem>
-				<Button type="submit" disabled={disableSubmit}>
-					Enviar
-				</Button>
-			</Stack>
-		</Form>
+					<FormItem>
+						<p className="cds--file--label">Elegir archivo</p>
+						<p className="cds--label-description">Max {maxKbSize} kB. Solo acepta archivos .docx</p>
+						<FileUploaderDropContainer
+							accept={['.docx']}
+							innerRef={{
+								current: '[Circular]',
+							}}
+							labelText="Arrastra un archivo o da click para seleccionarlo"
+							multiple={false}
+							name=""
+							onAddFiles={handleChangeFile}
+							onChange={handleChangeFile}
+							tabIndex={0}
+						/>
+						{fileExists ? getFileDescription() : null}
+						<div className="cds--file-container cds--file-container--drop" />
+					</FormItem>
+					<Button type="submit" disabled={disableSubmit}>
+						Enviar
+					</Button>
+				</Stack>
+			</Form>
+			<TemplateFieldsModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} templateData={templateStructure} />
+		</>
 	);
 };
 
