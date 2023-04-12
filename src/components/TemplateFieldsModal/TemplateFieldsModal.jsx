@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { TextInput, Button, Modal, Dropdown, Select, SelectItem, Grid, Row, Column } from '@carbon/react';
+import { putTemplateStructure } from '../../services/putTemplateStructure';
 
 export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData }) => {
 	const [modalInputsList, setModalInputsList] = useState([]);
@@ -35,7 +36,7 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 		}
 	}, [templateData]);
 
-	const handlePrimaryClick = () => {
+	const handlePrimaryClick = async () => {
 		if (primaryButtonText === 'Siguiente') {
 			let currentFields = { ...currentTemplateData.fields };
 			let currentFieldKey = Object.keys(currentFields)[indexToShow];
@@ -50,16 +51,22 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 			setIndexToShow(nextIndex);
 			if (nextIndex >= modalInputsList.length) {
 				setPrimaryButtonText('Finalizar');
+				console.log(currentTemplateData);
 				setShowSummary(true);
 			}
 		} else {
 			//Update data in DB
-
-			console.log(currentFields);
-
-			setIsModalOpen(false);
-			setCurrentTemplateData({ ...templateData });
-			setIndexToShow(0);
+			try {
+				let response = await putTemplateStructure({ templateData: { ...currentTemplateData } });
+				console.log(response);
+			} catch (error) {
+				// [TODO]: Add some error handling and notification showing for the user
+			} finally {
+				setIsModalOpen(false);
+				setCurrentTemplateData({ ...templateData });
+				setIndexToShow(0);
+				setShowSummary(false);
+			}
 		}
 	};
 
@@ -67,12 +74,14 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 		setCurrentTemplateData({ ...templateData });
 		setIsModalOpen(false);
 		setIndexToShow(0);
+		setShowSummary(false);
 	};
 
 	const handleCloseModal = () => {
 		setCurrentTemplateData({ ...templateData });
 		setIsModalOpen(false);
 		setIndexToShow(0);
+		setShowSummary(false);
 	};
 
 	const buildSummary = (inputGroup) => {
