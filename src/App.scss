@@ -1,6 +1,7 @@
 @use './components/common/Navbar/navbar';
 @use './components/common/SideMenu/side-menu.scss';
 @use './components/DocumentForm/document-form.scss';
+@use './components/TemplateFieldsModal/template-fields-modal.scss';
 
 #root {
 	max-width: 1280px;

@@ -12,11 +12,13 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 	const [indexToShow, setIndexToShow] = useState(0);
 	const [showSummary, setShowSummary] = useState(false);
 
+	//Create a list of components to define field data on the modal.
 	useEffect(() => {
 		if (templateData?.fields) {
 			let inputList = Object.keys(templateData.fields).map((fieldKey) => {
 				return (
 					<div key={fieldKey}>
+						<div className="modal-field-header-text"> Campo: {fieldKey}</div>
 						<TextInput id={`text-${fieldKey}`} labelText="Descripción del campo" />
 						<br></br>
 						<Select id={`select-${fieldKey}`} labelText="Tipo de Dato">
@@ -36,6 +38,7 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 		}
 	}, [templateData]);
 
+	//Logig for the primary button
 	const handlePrimaryClick = async () => {
 		if (primaryButtonText === 'Siguiente') {
 			let currentFields = { ...currentTemplateData.fields };
@@ -78,14 +81,59 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 	};
 
 	const handleCloseModal = () => {
-		setCurrentTemplateData({ ...templateData });
 		setIsModalOpen(false);
+		setCurrentTemplateData({ ...templateData });
 		setIndexToShow(0);
 		setShowSummary(false);
 	};
 
+	const handleTextChange = (event) => {
+		let target = event.target;
+		let fieldKey = event.target.id.split('-')[1];
+		let fieldProp = event.target.id.split('-')[0];
+		let currentFields = { ...currentTemplateData.fields };
+		currentFields[fieldKey].description = target.value;
+
+		//Modify data on current template data
+		setCurrentTemplateData({ ...currentTemplateData, fields: currentFields });
+	};
+
+	const handleSelectChange = (event) => {
+		let target = event.target;
+		let fieldKey = event.target.id.split('-')[1];
+		let fieldProp = event.target.id.split('-')[0];
+		let currentFields = { ...currentTemplateData.fields };
+		currentFields[fieldKey][fieldProp] = target.value;
+
+		//Modify data on current template data
+		setCurrentTemplateData({ ...currentTemplateData, fields: currentFields });
+	};
+
 	const buildSummary = (inputGroup) => {
-		return inputGroup;
+		let fieldKey = inputGroup.key;
+		let fieldData = currentTemplateData.fields[fieldKey];
+		return (
+			<div key={`sumarry-${fieldKey}`}>
+				<div className="cds--content modal-summary-header-text">Campo: {fieldKey}</div>
+				<Grid>
+					<Column lg={8}>
+						<TextInput
+							onChange={handleTextChange}
+							id={`description-${fieldKey}`}
+							labelText="Descripción del campo"
+							value={fieldData.description || '-'}
+						/>
+					</Column>
+					<Column lg={8}>
+						<Select id={`dataType-${fieldKey}`} labelText="Tipo de Dato" onChange={handleSelectChange}>
+							<SelectItem value="string" text="Texto" />
+							<SelectItem value="number" text="Numero" />
+							<SelectItem value="date" text="Fecha" />
+						</Select>
+					</Column>
+				</Grid>
+			</div>
+		);
 	};
 
 	return (
