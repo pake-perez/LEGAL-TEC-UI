@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { getFotoMulta } from '../../services/getFotoMulta';
-import { Form, FormGroup, Stack, TextInput, Button } from '@carbon/react';
+import { getAvailableTemplates } from '../../services/getAvailableTemplates';
+import { Form, FormGroup, Stack, TextInput, Button, Select, SelectItem } from '@carbon/react';
 
 const DocumentForm = () => {
-	const [name, setName] = useState('');
-	const [plate, setPlate] = useState('');
-	const [model, setModel] = useState('');
+	const [availableTemplates, setAvailableTemplates] = useState([]);
+	const [templateOptions, setTemplateOptions] = useState(null);
+	const [selectedTemplate, setSelectedTemplate] = useState(null);
+	const [dynamicForm, setDynamicForm] = useState(null);
 
 	const submitInfo = async () => {
-		let newName = document.getElementById('name').value;
-		let newPlate = document.getElementById('plate').value;
-		let newModel = document.getElementById('model').value;
-
 		let formData = {
 			name,
 			plate,
@@ -45,17 +43,84 @@ const DocumentForm = () => {
 		}
 	};
 
+	const getTemplatesList = async () => {
+		try {
+			let data = await getAvailableTemplates('pakeperez@gmail.com');
+			console.log(data);
+			setAvailableTemplates(data);
+		} catch (error) {
+			//TODO: Send notification or something else
+			console.error(error);
+		}
+	};
+
+	useEffect(() => {
+		getTemplatesList();
+	}, []);
+
+	useEffect(() => {
+		if (availableTemplates) {
+			let buildOptions = availableTemplates.map((template, i) => {
+				return <SelectItem key={`template-option-${i}`} value={template.id} text={template.fileName} />;
+			});
+			setTemplateOptions(buildOptions);
+		}
+	}, [availableTemplates]);
+
+	const handleSelectTemplate = (event) => {
+		let templateId = event.target.value;
+		let selected = availableTemplates.find((template) => {
+			return template.id === templateId;
+		});
+		console.log(selected);
+		setSelectedTemplate(selected);
+	};
+
+	const buildForm = () => {
+		let templateFields = selectedTemplate.fields;
+		let fieldKeys = Object.keys(templateFields);
+		let formItems = fieldKeys.map((fieldKey) => {
+			let field = templateFields[fieldKey];
+			let dataType = field.dataType;
+			if (dataType === 'string') {
+				return (
+					<>
+						<div className="cds--content modal-summary-header-text">{field.description}</div>
+						<TextInput onChange={handleTextChange} id={`text-${field.placeholder}`} hideLabel={true} />
+					</>
+				);
+			}
+			// else if(dataType==='number'){}
+			// else if (dataType === 'date') { }
+		});
+		setDynamicForm(<FormGroup style={{ maxWidth: '400px' }}>{formItems}</FormGroup>);
+	};
+
+	useEffect(() => {
+		if (selectedTemplate) {
+			buildForm();
+		}
+	}, [selectedTemplate]);
+
 	return (
-		<Form>
-			<Stack gap={7}>
-				<FormGroup style={{ maxWidth: '400px' }} legendText="Datos de Fotoinfraccion">
-					<TextInput onChange={handleTextChange} id="name" labelText="Nombre" />
-					<TextInput onChange={handleTextChange} id="plate" labelText="Placa" />
-					<TextInput onChange={handleTextChange} id="model" labelText="Modelo" />
-				</FormGroup>
-				<Button onClick={submitInfo}>Submit</Button>
-			</Stack>
-		</Form>
+		<>
+			{templateOptions ? (
+				<>
+					<div className="cds--content  modal-summary-header-text">Seleccione la plantilla que desea usar</div>
+					<Select id="select-template" onChange={handleSelectTemplate} hideLabel={true}>
+						{templateOptions.map((option) => option)}
+					</Select>
+				</>
+			) : null}
+			{dynamicForm ? (
+				<Form>
+					<Stack gap={7}>
+						{dynamicForm}
+						<Button onClick={submitInfo}>Submit</Button>
+					</Stack>
+				</Form>
+			) : null}
+		</>
 	);
 };
 

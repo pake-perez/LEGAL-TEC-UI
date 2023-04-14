@@ -71,10 +71,6 @@ const UploadFile = () => {
 		return isValid;
 	};
 
-	const validateForm = () => {
-		uploadFile();
-	};
-
 	const getFileDescription = () => {
 		return (
 			<FileUploaderItem

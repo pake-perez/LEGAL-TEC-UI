@@ -1,16 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
-// https://vitejs.dev/config/
-export default defineConfig({
+const defaultConfig = {
 	plugins: [react()],
-	server: {
-		port: 3000,
-		strictPort: true,
-		proxy: {
-			'/api': 'http://localhost:3001',
-		},
-	},
 	resolve: {
 		alias: {
 			'./runtimeConfig': './runtimeConfig.browser',
@@ -23,4 +15,28 @@ export default defineConfig({
 			},
 		},
 	},
+};
+
+// https://vitejs.dev/config/
+export default defineConfig(({ command, mode }) => {
+	if (command === 'serve') {
+		console.log(mode);
+		const isDev = mode === 'development';
+		return {
+			...defaultConfig,
+			server: {
+				port: 3000,
+				strictPort: true,
+				proxy: {
+					'/api': {
+						target: isDev ? 'http://localhost:3001' : 'https://8axj0goh72.execute-api.us-east-1.amazonaws.com/staging',
+						changeOrigin: isDev,
+						secure: !isDev,
+					},
+				},
+			},
+		};
+	} else {
+		return defaultConfig;
+	}
 });
