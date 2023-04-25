@@ -8,13 +8,18 @@ const DocumentForm = () => {
 	const [availableTemplates, setAvailableTemplates] = useState([]);
 	const [templateOptions, setTemplateOptions] = useState(null);
 	const [selectedTemplate, setSelectedTemplate] = useState(null);
+	const [selectedFileName, setSelectedFileName] = useState(null);
 	const [dynamicForm, setDynamicForm] = useState(null);
 	const [formData, setFormData] = useState({});
 	const [currentModify, setCurrentModify] = useState({});
 
 	const submitInfo = async () => {
-		let data = await getFotoMulta(formData);
-		const url = window.URL.createObjectURL(new Blob([data]));
+		let data = {
+			fileName: selectedFileName,
+			fields: formData,
+		};
+		let res = await getFotoMulta(data);
+		const url = window.URL.createObjectURL(new Blob([res]));
 		const link = document.createElement('a');
 		link.href = url;
 		link.setAttribute('download', 'Nuevo Doc.docx');
@@ -24,6 +29,7 @@ const DocumentForm = () => {
 
 	const getTemplatesList = async () => {
 		try {
+			//TODO: Change the predefined username
 			let data = await getAvailableTemplates('pakeperez@gmail.com');
 			setAvailableTemplates(data);
 		} catch (error) {
@@ -64,6 +70,7 @@ const DocumentForm = () => {
 		let selected = availableTemplates.find((template) => {
 			return template.id === templateId;
 		});
+		setSelectedFileName(event.target.options[event.target.selectedIndex].text);
 		setSelectedTemplate(selected);
 	};
 
