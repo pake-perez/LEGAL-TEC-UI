@@ -19,6 +19,10 @@ import {
 	BreadcrumbItem,
 	Button,
 } from '@carbon/react';
+import { Folder, DocumentWordProcessor } from '@carbon/react/icons';
+
+const FolderIcon = () => <Folder size={16} />;
+const DocumentWordProcessorIcon = () => <DocumentWordProcessor size={16} />;
 
 const TemplatesList = () => {
 	const [availableTemplates, setAvailableTemplates] = useState(null);
@@ -59,7 +63,7 @@ const TemplatesList = () => {
 					});
 				} else {
 					let itemName = item === user + '/' ? 'My Templates' : item.split('/')[0];
-					newRows.push({ id: 'row-' + i, name: itemName, isFolder: true, item });
+					newRows.push({ id: 'folder-' + i, name: itemName, isFolder: true, item });
 				}
 			});
 			setTableData(newRows);
@@ -92,6 +96,17 @@ const TemplatesList = () => {
 
 	const action = (event) => {
 		console.log(event.target);
+	};
+
+	const getOptionalIcon = (row) => {
+		let isFolder = row.id.split('-')[0] === 'folder';
+		let icon = null;
+		if (isFolder) {
+			icon = FolderIcon();
+		} else {
+			icon = DocumentWordProcessorIcon();
+		}
+		return icon;
 	};
 
 	return (
@@ -158,7 +173,11 @@ const TemplatesList = () => {
 														}}
 													>
 														{row.cells.map((cell) => {
-															return <TableCell key={cell.id}>{cell.value}</TableCell>;
+															return (
+																<TableCell key={cell.id}>
+																	{getOptionalIcon(row)} {cell.value}
+																</TableCell>
+															);
 														})}
 													</TableRow>
 												);
