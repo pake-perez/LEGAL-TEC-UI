@@ -72,10 +72,8 @@ const TemplatesList = () => {
 			let clickedRow = row.id.split('-')[1];
 			let rowData = tableData[clickedRow];
 			if (rowData.isFolder) {
-				console.log(folderShown[rowData.item]);
 				let currentBreadCrumbList = [...breadCrumbsList];
 				currentBreadCrumbList.push({ name: rowData.name, content: folderShown[rowData.item] });
-				console.log(currentBreadCrumbList);
 				setBreadCrumbsList(currentBreadCrumbList);
 				setFolderShown(folderShown[rowData.item]);
 			}
