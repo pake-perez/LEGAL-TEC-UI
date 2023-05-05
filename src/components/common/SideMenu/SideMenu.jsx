@@ -20,6 +20,9 @@ const SideMenu = () => (
 					<Link className="link cds--side-nav__link" to="/templates" state={{ view: 'upload' }}>
 						Upload Template
 					</Link>
+					<Link className="link cds--side-nav__link" to="/templates" state={{ view: 'view' }}>
+						View Templates
+					</Link>
 				</SideNavMenu>
 				<SideNavMenu renderIcon={DocumentSignedIcon} title="Documentos">
 					{/* <SideNavMenuItem href="/documentos">Crear Documento</SideNavMenuItem> */}

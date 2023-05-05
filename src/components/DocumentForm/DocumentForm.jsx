@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { getFotoMulta } from '../../services/getFotoMulta';
-import { getAvailableTemplates } from '../../services/getAvailableTemplates';
+import { getAvailableStructures } from '../../services/getAvailableStructures';
 import { Form, FormGroup, Stack, TextInput, Button, Select, SelectItem, DatePicker, DatePickerInput } from '@carbon/react';
 
 const DocumentForm = () => {
@@ -30,7 +30,7 @@ const DocumentForm = () => {
 	const getTemplatesList = async () => {
 		try {
 			//TODO: Change the predefined username
-			let data = await getAvailableTemplates('pakeperez@gmail.com');
+			let data = await getAvailableStructures('pakeperez@gmail.com');
 			setAvailableTemplates(data);
 		} catch (error) {
 			//TODO: Send notification or something else

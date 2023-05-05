@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Layout from '../../common/Layout/Layout';
 import UploadFile from '../../UploadFile/UploadFile';
+import TemplatesList from '../../TemplatesList/TemplatesList';
 
 export const Templates = () => {
 	const location = useLocation();
@@ -10,6 +11,8 @@ export const Templates = () => {
 		switch (location.state.view) {
 			case 'upload':
 				return <UploadFile />;
+			case 'view':
+				return <TemplatesList />;
 			default:
 				return null;
 		}

@@ -54,14 +54,12 @@ export const TemplateFieldsModal = ({ isModalOpen, setIsModalOpen, templateData 
 			setIndexToShow(nextIndex);
 			if (nextIndex >= modalInputsList.length) {
 				setPrimaryButtonText('Finalizar');
-				console.log(currentTemplateData);
 				setShowSummary(true);
 			}
 		} else {
 			//Update data in DB
 			try {
 				let response = await putTemplateStructure({ templateData: { ...currentTemplateData } });
-				console.log(response);
 			} catch (error) {
 				// [TODO]: Add some error handling and notification showing for the user
 			} finally {
