@@ -1,7 +1,24 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { getAvailableTemplates } from '../../services/getAvailableTemplates';
-import { Table, TableHead, TableHeader, TableBody, TableRow, TableCell, Breadcrumb, BreadcrumbItem } from '@carbon/react';
+import {
+	DataTable,
+	TableContainer,
+	TableToolbar,
+	TableToolbarContent,
+	TableToolbarSearch,
+	TableToolbarMenu,
+	TableToolbarAction,
+	Table,
+	TableHead,
+	TableHeader,
+	TableBody,
+	TableRow,
+	TableCell,
+	Breadcrumb,
+	BreadcrumbItem,
+	Button,
+} from '@carbon/react';
 
 const TemplatesList = () => {
 	const [availableTemplates, setAvailableTemplates] = useState(null);
@@ -10,14 +27,12 @@ const TemplatesList = () => {
 	const [tableData, setTableData] = useState([]);
 	const [breadCrumbsList, setBreadCrumbsList] = useState([]);
 
-	const tableHeaders = ['Name'];
-	const hiddenCols = ['id', 'isFolder', 'item'];
+	const tableHeaders = [{ key: 'name', header: 'Name' }];
 
 	useEffect(() => {
 		async function getTemplates() {
 			//TODO: Change the hardcoded user mail for the user context
 			let result = await getAvailableTemplates('pakeperez@gmail.com');
-			console.log(result);
 			setAvailableTemplates(result);
 		}
 		getTemplates();
@@ -44,7 +59,7 @@ const TemplatesList = () => {
 					});
 				} else {
 					let itemName = item === user + '/' ? 'My Templates' : item.split('/')[0];
-					newRows.push({ id: i, name: itemName, isFolder: true, item });
+					newRows.push({ id: 'row-' + i, name: itemName, isFolder: true, item });
 				}
 			});
 			setTableData(newRows);
@@ -54,13 +69,15 @@ const TemplatesList = () => {
 	const onRowClick = (event, row) => {
 		//On Double Click
 		if (event.detail === 2) {
-			if (row.isFolder) {
-				console.log(folderShown[row.item]);
+			let clickedRow = row.id.split('-')[1];
+			let rowData = tableData[clickedRow];
+			if (rowData.isFolder) {
+				console.log(folderShown[rowData.item]);
 				let currentBreadCrumbList = [...breadCrumbsList];
-				currentBreadCrumbList.push({ name: row.name, content: folderShown[row.item] });
+				currentBreadCrumbList.push({ name: rowData.name, content: folderShown[rowData.item] });
 				console.log(currentBreadCrumbList);
 				setBreadCrumbsList(currentBreadCrumbList);
-				setFolderShown(folderShown[row.item]);
+				setFolderShown(folderShown[rowData.item]);
 			}
 		}
 	};
@@ -73,6 +90,10 @@ const TemplatesList = () => {
 			setBreadCrumbsList(newBreadCrumbs);
 		}
 		setFolderShown(breadCrumbItem.content);
+	};
+
+	const action = (event) => {
+		console.log(event.target);
 	};
 
 	return (
@@ -88,28 +109,69 @@ const TemplatesList = () => {
 			) : null}
 
 			<br></br>
-			<Table>
-				<TableHead>
-					<TableRow>
-						{tableHeaders.map((header) => (
-							<TableHeader id={header.key} key={header}>
-								{header}
-							</TableHeader>
-						))}
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{tableData.map((row) => (
-						<TableRow key={row.id} onClick={(event) => onRowClick(event, row)}>
-							{Object.keys(row)
-								.filter((key) => !hiddenCols.includes(key))
-								.map((key) => {
-									return <TableCell key={key}>{row[key]}</TableCell>;
-								})}
-						</TableRow>
-					))}
-				</TableBody>
-			</Table>
+			{tableData ? (
+				<DataTable rows={tableData} headers={tableHeaders}>
+					{({ rows, headers, getHeaderProps, getRowProps, getTableProps, getToolbarProps, onInputChange, getTableContainerProps, testClick }) => (
+						<TableContainer {...getTableContainerProps()}>
+							<TableToolbar {...getToolbarProps()} aria-label="data table toolbar">
+								<TableToolbarContent>
+									<TableToolbarSearch
+										onChange={onInputChange}
+										onClear={action}
+										onFocus={(event, handleExpand) => {
+											action;
+											handleExpand(event, true);
+										}}
+										onBlur={(event, handleExpand) => {
+											action;
+											const { value } = event.target;
+											if (!value) {
+												handleExpand(event, false);
+											}
+										}}
+									/>
+									<TableToolbarMenu light>
+										<TableToolbarAction onClick={action}>Action 1</TableToolbarAction>
+										<TableToolbarAction onClick={action}>Action 2</TableToolbarAction>
+										<TableToolbarAction onClick={action}>Action 3</TableToolbarAction>
+									</TableToolbarMenu>
+									<Button onClick={action}>Primary Button</Button>
+								</TableToolbarContent>
+							</TableToolbar>
+							<Table>
+								<TableHead>
+									<TableRow>
+										{headers.map((header) => (
+											<TableHeader id={header.key} key={header} {...getHeaderProps({ header })}>
+												{header.header}
+											</TableHeader>
+										))}
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{rows
+										? rows.map((row) => {
+												return (
+													<TableRow
+														key={row.id}
+														{...getRowProps({ row })}
+														onClick={(e) => {
+															onRowClick(e, row);
+														}}
+													>
+														{row.cells.map((cell) => {
+															return <TableCell key={cell.id}>{cell.value}</TableCell>;
+														})}
+													</TableRow>
+												);
+										  })
+										: null}
+								</TableBody>
+							</Table>
+						</TableContainer>
+					)}
+				</DataTable>
+			) : null}
 		</>
 	);
 };
