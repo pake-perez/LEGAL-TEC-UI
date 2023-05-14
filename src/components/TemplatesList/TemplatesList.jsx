@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAvailableTemplates } from '../../services/getAvailableTemplates';
 import {
 	DataTable,
@@ -19,12 +20,15 @@ import {
 	BreadcrumbItem,
 	Button,
 } from '@carbon/react';
-import { Folder, DocumentWordProcessor } from '@carbon/react/icons';
+import { Folder, FolderAdd, DocumentAdd, DocumentWordProcessor } from '@carbon/react/icons';
 
 const FolderIcon = () => <Folder size={16} />;
+const FolderAddIcon = () => <FolderAdd size={16} />;
+const DocumentAddIcon = () => <DocumentAdd size={16} />;
 const DocumentWordProcessorIcon = () => <DocumentWordProcessor size={16} />;
 
 const TemplatesList = () => {
+	const navigate = useNavigate();
 	const [availableTemplates, setAvailableTemplates] = useState(null);
 	const [folderShown, setFolderShown] = useState(null);
 	const [selectedFolder, setSelectedFolder] = useState('root');
@@ -45,7 +49,7 @@ const TemplatesList = () => {
 	useEffect(() => {
 		if (availableTemplates) {
 			setFolderShown(availableTemplates);
-			setBreadCrumbsList([{ name: 'root', content: availableTemplates }]);
+			setBreadCrumbsList([{ name: 'Inicio', content: availableTemplates }]);
 		}
 	}, [availableTemplates]);
 
@@ -98,6 +102,10 @@ const TemplatesList = () => {
 		console.log(event.target);
 	};
 
+	const createNewTemplate = () => {
+		navigate('/templates', { state: { view: 'upload' } });
+	};
+
 	const getOptionalIcon = (row) => {
 		let isFolder = row.id.split('-')[0] === 'folder';
 		let icon = null;
@@ -144,9 +152,8 @@ const TemplatesList = () => {
 										}}
 									/>
 									<TableToolbarMenu light>
-										<TableToolbarAction onClick={action}>Action 1</TableToolbarAction>
-										<TableToolbarAction onClick={action}>Action 2</TableToolbarAction>
-										<TableToolbarAction onClick={action}>Action 3</TableToolbarAction>
+										<TableToolbarAction onClick={action}>{FolderAddIcon()} Crear carpeta</TableToolbarAction>
+										<TableToolbarAction onClick={createNewTemplate}>{DocumentAddIcon()} Crear documento</TableToolbarAction>
 									</TableToolbarMenu>
 									<Button onClick={action}>Primary Button</Button>
 								</TableToolbarContent>
